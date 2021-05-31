@@ -1,1 +1,46 @@
 MODULE main
+  VAR
+    state: {Initial, Fan_low_Lamp_off, Fan_low_Lamp_on, Fan_max_Lamp_off, Overheat, Off};
+    event: {buttonPressed1sec, buttonPressed2sec, None}
+    time: 0..16
+    temperature : 39..66
+  
+  ASSIGN
+    init(state):= Initial;
+    init(event):= None;
+    init(temperature):= 39;
+    init(time):= 0;
+    
+    next(state):= case
+      state = Initial & event = None : Off;
+      state = Off & temperature < 40 : Fan_low_Lamp_off;
+      state = Fan_low_Lamp_off & time > 2 : Fan_low_Lamp_on;
+      state = Fan_low_Lamp_off & event = buttonPressed2sec : Off;
+      state = Fan_low_Lamp_on & temperature >= 58 : Fan_max_Lamp_on;
+      state = Fan_low_Lamp_on & event = buttonPressed2sec : Off;
+      state = Fan_max_Lamp_on & temperature < 58 : Fan_low_Lamp_on;
+      state = Fan_max_Lamp_on & event = buttonPressed2sec : Off;
+      state = Fan_max_Lamp_on & temperature > 65 : Overheat;
+      state = Overheat & time > 15: Off;
+      True : state;
+    esac;
+    
+    next(temperature):= case
+      state = Fan_low_Lamp_on : temperature + 1;
+      state = Fan_max_Lamp_on : temperature - 1;
+      state = overheat : 39;
+      True : temperature;
+    esac;
+    
+    next(time):= case
+      state = Off : 0;
+      state = Fan_low_Lamp_off : time + 1;
+      state = Fan_low_Lamp_on : 0;
+      state = Overheat : time + 1;
+      True : time;
+    esac;
+
+LTLSPEC G(state != Fan_low_Lamp_off)
+LTLSPEC G(state != Fan_low_Lamp_on)
+LTLSPEC G(state != Fan_max_Lamp_on)
+LTLSPEC G(state != Overheat)
