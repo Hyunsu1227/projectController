@@ -33,10 +33,11 @@ MODULE main
     esac;
     
     next(time):= case
+      time + 1 > 15 : time;
       state = Off : 0;
-      state = Fan_low_Lamp_off : time + 1;
+      state = Fan_low_Lamp_off & time < 2: time + 1;
       state = Fan_low_Lamp_on : 0;
-      state = Overheat : time + 1;
+      state = Overheat & time < 15 : time + 1;
       TRUE : time;
     esac;
 
