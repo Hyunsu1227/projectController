@@ -2,8 +2,8 @@ MODULE main
   VAR
     state: {Initial, Fan_low_Lamp_off, Fan_low_Lamp_on, Fan_max_Lamp_off, Overheat, Off};
     event: {buttonPressed1sec, buttonPressed2sec, None}
-    time: 0..16
-    temperature : 39..66
+    time: 0..16;
+    temperature : 39..66;
   
   ASSIGN
     init(state):= Initial;
