@@ -22,14 +22,14 @@ MODULE main
       state = Fan_max_Lamp_on & event = buttonPressed2sec : Off;
       state = Fan_max_Lamp_on & temperature > 65 : Overheat;
       state = Overheat & time > 15: Off;
-      True : state;
+      TRUE : state;
     esac;
     
     next(temperature):= case
       state = Fan_low_Lamp_on : temperature + 1;
       state = Fan_max_Lamp_on : temperature - 1;
       state = overheat : 39;
-      True : temperature;
+      TRUE : temperature;
     esac;
     
     next(time):= case
@@ -37,7 +37,7 @@ MODULE main
       state = Fan_low_Lamp_off : time + 1;
       state = Fan_low_Lamp_on : 0;
       state = Overheat : time + 1;
-      True : time;
+      TRUE : time;
     esac;
 
 LTLSPEC G(state != Fan_low_Lamp_off)
