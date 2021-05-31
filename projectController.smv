@@ -28,7 +28,7 @@ MODULE main
     next(temperature):= case
       state = Fan_low_Lamp_on : temperature + 1;
       state = Fan_max_Lamp_on : temperature - 1;
-      state = overheat : 39;
+      state = Overheat : 39;
       TRUE : temperature;
     esac;
     
