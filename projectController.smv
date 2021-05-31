@@ -20,14 +20,16 @@ MODULE main
       state = Fan_low_Lamp_on & event = buttonPressed2sec : Off;
       state = Fan_max_Lamp_on & temperature < 58 : Fan_low_Lamp_on;
       state = Fan_max_Lamp_on & event = buttonPressed2sec : Off;
-      state = Fan_max_Lamp_on & temperature > 65 : Overheat;
+      state = Fan_max_Lamp_on & temperature >= 65 : Overheat;
       state = Overheat & time > 15: Off;
       TRUE : state;
     esac;
     
     next(temperature):= case
-      state = Fan_low_Lamp_on : temperature + 1;
-      state = Fan_max_Lamp_on : temperature - 1;
+      temperature + 1 > 65 : temperature;
+      temperature - 1 < 39 : temperature;
+      state = Fan_low_Lamp_on & temperature < 58: temperature + 1;
+      state = Fan_max_Lamp_on & temperature >= 58: temperature - 1;
       state = Overheat : 39;
       TRUE : temperature;
     esac;
